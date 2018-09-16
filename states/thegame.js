@@ -39,19 +39,26 @@ theGame.prototype = {
         stars.enableBody = true;
         stars.physicsBodyType = Phaser.Physics.ARCADE;
 
-        scoreText = this.game.add.text(this.game.width - 150, 20, `score: ${score}`, { font: "20px Arial", fill: "#151414", align: "left" });
+        score = 0;
+        sizeMultipler = 1;
 
-        music = this.game.add.audio('music');
-        music.play();
-        music.loop = true;
+        if (music) {
+            music.resume();
+        } else {
+            music = this.game.add.audio('music');
+            music.play();
+            music.loop = true;
+        }
+
         drip = this.game.add.audio('drip');
         powerup = this.game.add.audio('powerup');
         starPowerup = this.game.add.audio('star-powerup');
 
+        scoreText = this.game.add.text(this.game.width - 150, 20, `score: ${score}`, { font: "20px Arial", fill: "#151414", align: "left" });
         this.game.time.events.repeat(Phaser.Timer.SECOND / 2, 1000, this.spawnWaterDrop, this);
         this.game.time.events.add(Phaser.Timer.SECOND * 3, this.spawnWateringCan, this);
         this.game.time.events.add(Phaser.Timer.SECOND * 2, this.spawnStar, this);
-        this.game.time.events.add(Phaser.Timer.SECOND * 30, this.gameOver, this);
+        this.game.time.events.add(Phaser.Timer.SECOND * 3, this.gameOver, this);
     },
 
     update: function () {

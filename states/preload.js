@@ -5,8 +5,8 @@ preload.prototype = {
         this.game.load.audio('music', 'cloud-nine.mp3');
         this.game.load.audio('sfx', 'http://examples.phaser.io/assets/audio/SoundEffects/fx_mixdown.ogg');
         this.game.load.audio('drip', 'coin_01.wav');
-        this.game.load.audio('powerup', 'magic-wand.wav')
-        this.game.load.audio('star-powerup', 'star.mp3')
+        this.game.load.audio('powerup', 'magic-wand.wav');
+        this.game.load.audio('star-powerup', 'star.mp3');
         this.game.load.spritesheet('button', 'http://examples.phaser.io/assets/buttons/button_sprite_sheet.png', 193, 71);
         this.game.load.image('alien', 'icons/fire.png');
         this.game.load.image('player', 'icons/seed-bag.png');
@@ -23,6 +23,8 @@ preload.prototype = {
         this.game.load.image('start', 'icons/start-button.png');
         this.game.load.image('title', 'title.png');
         this.game.load.image('background', 'garden2.png');
+        this.game.load.image('playagain', 'buttons/play-again.png');
+        this.game.load.image('gameover', 'game-over.png');
     },
     create: function () {
         this.game.state.start("SplashScreen");
