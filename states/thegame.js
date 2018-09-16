@@ -58,7 +58,7 @@ theGame.prototype = {
         this.game.time.events.repeat(Phaser.Timer.SECOND / 2, 1000, this.spawnWaterDrop, this);
         this.game.time.events.add(Phaser.Timer.SECOND * 3, this.spawnWateringCan, this);
         this.game.time.events.add(Phaser.Timer.SECOND * 2, this.spawnStar, this);
-        this.game.time.events.add(Phaser.Timer.SECOND * 3, this.gameOver, this);
+        this.game.time.events.add(Phaser.Timer.SECOND * 30, this.gameOver, this);
     },
 
     update: function () {
