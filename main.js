@@ -30,16 +30,25 @@ function create() {
     aliens.enableBody = true;
     aliens.physicsBodyType = Phaser.Physics.ARCADE;
 
-    for (var y = 0; y < 4; y++) {
-        for (var x = 0; x < 10; x++) {
-            var alien = aliens.create(200 + x * 48, y * 50, 'alien');
-            alien.name = 'alien' + x.toString() + y.toString();
-            alien.checkWorldBounds = true;
-            alien.events.onOutOfBounds.add(alienOut, this);
-            alien.body.velocity.y = 50 + Math.random() * 200;
+    dropThings(true);
+    introText = game.add.text(game.world.centerX, 200, '', { font: "40px Arial", fill: "#ffffff", boundsAlignH: "center", boundsAlignV: "middle" });
+    introText.anchor.setTo(0.5);
+}
+
+function dropThings(val) {
+    if (val === true) {
+        for (var y = 0; y < 4; y++) {
+            for (var x = 0; x < 10; x++) {
+                var alien = aliens.create(200 + x * 48, y * 50, 'alien');
+                alien.name = 'alien' + x.toString() + y.toString();
+                alien.checkWorldBounds = true;
+                alien.events.onOutOfBounds.add(alienOut, this);
+                alien.body.velocity.y = 50 + Math.random() * 200;
+            }
         }
+    } else {
+        aliens.exists = false;
     }
-    introText = game.add.text(game.world.centerX, 400, '- click to start -', { font: "40px Arial", fill: "#ffffff", align: "center" });
 }
 
 function update() {
@@ -50,6 +59,7 @@ function update() {
     });
 
     if (lives === 0) {
+        aliens.exists = false;
         gameOver();
     }
 
