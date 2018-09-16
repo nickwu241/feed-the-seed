@@ -1,7 +1,8 @@
 var game = new Phaser.Game(800, 600, Phaser.AUTO, 'save-the-day', { preload: preload, create: create, update: update });
 var player;
-var platforms;
 var aliens;
+var livesText;
+var gameOverText;
 var lives = 3;
 
 function preload() {
@@ -10,8 +11,6 @@ function preload() {
     game.load.crossOrigin = 'anonymous';
     game.load.image('player', 'sprites/phaser-dude.png');
     game.load.image('alien', 'sprites/space-baddie.png');
-
-    var introText;
 }
 
 function create() {
@@ -24,43 +23,25 @@ function create() {
     player.body.gravity.y = 500;
     player.body.immovable = true;
 
-    livesText = game.add.text(680, 550, 'lives: 3', { font: "20px Arial", fill: "#ffffff", align: "left" });
-
     aliens = game.add.group();
     aliens.enableBody = true;
     aliens.physicsBodyType = Phaser.Physics.ARCADE;
 
-    dropThings(true);
-    introText = game.add.text(game.world.centerX, 200, '', { font: "40px Arial", fill: "#ffffff", boundsAlignH: "center", boundsAlignV: "middle" });
-    introText.anchor.setTo(0.5);
-}
+    livesText = game.add.text(680, 550, 'lives: 3', { font: "20px Arial", fill: "#ffffff", align: "left" });
 
-function dropThings(val) {
-    if (val === true) {
-        for (var y = 0; y < 4; y++) {
-            for (var x = 0; x < 10; x++) {
-                var alien = aliens.create(200 + x * 48, y * 50, 'alien');
-                alien.name = 'alien' + x.toString() + y.toString();
-                alien.checkWorldBounds = true;
-                alien.events.onOutOfBounds.add(alienOut, this);
-                alien.body.velocity.y = 50 + Math.random() * 200;
-            }
-        }
-    } else {
-        aliens.exists = false;
-    }
+    game.time.events.repeat(Phaser.Timer.SECOND / 6, 1000, spawnEnemy, this);
 }
 
 function update() {
     game.physics.arcade.collide(player, aliens, (p, a) => {
         a.kill();
         lives--;
-        livesText.text = 'lives: ' + lives;
+        livesText.text = `lives: ${lives}`;
     });
 
     if (lives === 0) {
-        aliens.exists = false;
         gameOver();
+        return;
     }
 
     player.x = game.input.x;
@@ -73,19 +54,22 @@ function update() {
 }
 
 function gameOver() {
-
-    introText.text = 'Game Over!';
-    introText.visible = true;
+    aliens.exists = false;
+    game.time.events.stop();
+    gameOverText = game.add.text(game.world.centerX, 200, 'Game Over!', { font: "40px Arial", fill: "#ffffff", boundsAlignH: "center", boundsAlignV: "middle" });
+    gameOverText.anchor.setTo(0.5);
 }
 
 function render() {
 
 }
 
-function alienOut(alien) {
-    //  Move the alien to the top of the screen again
-    alien.reset(alien.x, 0);
+function spawnEnemy() {
+    var alien = aliens.create(randomIntFromInterval(0, game.width), 50, 'alien');
+    alien.name = Math.random();
+    alien.body.velocity.y = 200;
+}
 
-    //  And give it a new random velocity
-    alien.body.velocity.y = 50 + Math.random() * 200;
+function randomIntFromInterval(min, max) {
+    return Math.floor(Math.random() * (max - min + 1) + min);
 }
