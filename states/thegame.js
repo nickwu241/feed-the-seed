@@ -22,7 +22,7 @@ theGame.prototype = {
 
         player = this.game.add.sprite(this.game.world.centerX, 500, 'player');
         player.scale.setTo(2, 2);
-        player.anchor.setTo(1, 1);
+        player.anchor.setTo(0.5, 1);
         this.game.physics.arcade.enable(player);
         player.body.collideWorldBounds = true;
         player.body.immovable = true;
@@ -48,7 +48,7 @@ theGame.prototype = {
         powerup = this.game.add.audio('powerup');
         starPowerup = this.game.add.audio('star-powerup');
 
-        this.game.time.events.repeat(Phaser.Timer.SECOND, 1000, this.spawnWaterDrop, this);
+        this.game.time.events.repeat(Phaser.Timer.SECOND / 2, 1000, this.spawnWaterDrop, this);
         this.game.time.events.add(Phaser.Timer.SECOND * 3, this.spawnWateringCan, this);
         this.game.time.events.add(Phaser.Timer.SECOND * 2, this.spawnStar, this);
         this.game.time.events.add(Phaser.Timer.SECOND * 30, this.gameOver, this);
@@ -89,11 +89,11 @@ theGame.prototype = {
         }
 
         player.x = this.game.input.x;
-        if (player.x < SCREEN_EDGE_OFFSET) {
-            player.x = SCREEN_EDGE_OFFSET;
+        if (player.x < SCREEN_EDGE_OFFSET * sizeMultipler) {
+            player.x = SCREEN_EDGE_OFFSET * sizeMultipler;
         }
-        else if (player.x > this.game.width - SCREEN_EDGE_OFFSET) {
-            player.x = this.game.width - SCREEN_EDGE_OFFSET;
+        else if (player.x > this.game.width - SCREEN_EDGE_OFFSET * sizeMultipler) {
+            player.x = this.game.width - SCREEN_EDGE_OFFSET * sizeMultipler;
         }
     },
 
@@ -121,7 +121,7 @@ theGame.prototype = {
         star.name = Math.random();
         star.body.velocity.y = 400;
         star.scale.setTo(0.25, 0.25);
-        this.game.time.events.add(Phaser.Timer.SECOND * this.randomIntFromInterval(5, 10), this.spawnStar, this);
+        this.game.time.events.add(Phaser.Timer.SECOND * this.randomIntFromInterval(4, 7), this.spawnStar, this);
     },
 
     spawnWateringCan: function () {
