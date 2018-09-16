@@ -10,6 +10,8 @@ function preload() {
     game.load.crossOrigin = 'anonymous';
     game.load.image('player', 'sprites/phaser-dude.png');
     game.load.image('alien', 'sprites/space-baddie.png');
+
+    var introText;
 }
 
 function create() {
@@ -37,14 +39,19 @@ function create() {
             alien.body.velocity.y = 50 + Math.random() * 200;
         }
     }
+    introText = game.add.text(game.world.centerX, 400, '- click to start -', { font: "40px Arial", fill: "#ffffff", align: "center" });
 }
 
-function update () {
+function update() {
     game.physics.arcade.collide(player, aliens, (p, a) => {
         a.kill();
         lives--;
         livesText.text = 'lives: ' + lives;
     });
+
+    if (lives === 0) {
+        gameOver();
+    }
 
     player.x = game.input.x;
     if (player.x < 24) {
@@ -55,7 +62,13 @@ function update () {
     }
 }
 
-function render () {
+function gameOver() {
+
+    introText.text = 'Game Over!';
+    introText.visible = true;
+}
+
+function render() {
 
 }
 
