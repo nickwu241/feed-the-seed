@@ -1,52 +1,35 @@
 var game = new Phaser.Game(800, 600, Phaser.AUTO, 'save-the-day', { preload: preload, create: create, update: update });
 var player;
 var platforms;
-var cursors;
-var jumpButton;
 var aliens;
-
+var lives = 3;
 
 function preload() {
-
     game.stage.backgroundColor = '#85b5e1';
-
     game.load.baseURL = 'http://examples.phaser.io/assets/';
     game.load.crossOrigin = 'anonymous';
-
     game.load.image('player', 'sprites/phaser-dude.png');
-    game.load.image('platform', 'sprites/platform.png');
-
     game.load.image('alien', 'sprites/space-baddie.png');
 }
 
 function create() {
-
-    player = game.add.sprite(100, 200, 'player');
+    player = game.add.sprite(game.world.centerX, 500, 'player');
+    player.anchor.setTo(0.5, 0.5);
 
     game.physics.arcade.enable(player);
 
     player.body.collideWorldBounds = true;
     player.body.gravity.y = 500;
+    player.body.immovable = true;
 
-    platforms = game.add.physicsGroup();
-
-    platforms.create(500, 150, 'platform');
-    platforms.create(-200, 300, 'platform');
-    platforms.create(400, 450, 'platform');
-
-    platforms.setAll('body.immovable', true);
-
-    cursors = game.input.keyboard.createCursorKeys();
-    jumpButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+    livesText = game.add.text(680, 550, 'lives: 3', { font: "20px Arial", fill: "#ffffff", align: "left" });
 
     aliens = game.add.group();
     aliens.enableBody = true;
     aliens.physicsBodyType = Phaser.Physics.ARCADE;
 
-    for (var y = 0; y < 4; y++)
-    {
-        for (var x = 0; x < 10; x++)
-        {
+    for (var y = 0; y < 4; y++) {
+        for (var x = 0; x < 10; x++) {
             var alien = aliens.create(200 + x * 48, y * 50, 'alien');
             alien.name = 'alien' + x.toString() + y.toString();
             alien.checkWorldBounds = true;
@@ -57,23 +40,18 @@ function create() {
 }
 
 function update () {
+    game.physics.arcade.collide(player, aliens, (p, a) => {
+        a.kill();
+        lives--;
+        livesText.text = 'lives: ' + lives;
+    });
 
-    game.physics.arcade.collide(player, platforms);
-
-    player.body.velocity.x = 0;
-
-    if (cursors.left.isDown)
-    {
-        player.body.velocity.x = -250;
+    player.x = game.input.x;
+    if (player.x < 24) {
+        player.x = 24;
     }
-    else if (cursors.right.isDown)
-    {
-        player.body.velocity.x = 250;
-    }
-
-    if (jumpButton.isDown && (player.body.onFloor() || player.body.touching.down))
-    {
-        player.body.velocity.y = -400;
+    else if (player.x > game.width - 24) {
+        player.x = game.width - 24;
     }
 }
 
@@ -82,11 +60,9 @@ function render () {
 }
 
 function alienOut(alien) {
-
     //  Move the alien to the top of the screen again
     alien.reset(alien.x, 0);
 
     //  And give it a new random velocity
     alien.body.velocity.y = 50 + Math.random() * 200;
-
 }
