@@ -4,10 +4,27 @@
 <head>
     <title>Save the Day</title>
     <script src="./phaser.min.js"></script>
+    <!--<script src="./states/boot.js"></script>-->
+    <script src="./states/preload.js"></script>
+    <script src="./states/splashscreen.js"></script>
+    <script src="./states/thegame.js"></script>
+    <script src="./states/gameover.js"></script>
 </head>
+<script>
+    (function () {
+        var game = new Phaser.Game(800, 500, Phaser.CANVAS, "game");
+        // game.state.add("Boot", boot);
+        game.state.add("Preload", preload);
+        game.state.add("SplashScreen", splashScreen);
+        game.state.add("TheGame", theGame);
+        game.state.add("GameOver", gameOver);
+
+        game.state.start("Preload");
+    })();
+</script>
 
 <body>
-<script src="main.js"></script>
+    <!-- <script src="main.js"></script> -->
 </body>
 
 </html>
