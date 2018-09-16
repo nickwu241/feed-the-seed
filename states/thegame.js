@@ -3,6 +3,7 @@ var theGame = function (game) {
     MAX_SCORE = 1500;
 
     player = null;
+    sizeMultipler = 1;
     waterDrops = null;
     sprinkers = null;
     stars = null;
@@ -21,7 +22,7 @@ theGame.prototype = {
 
         player = this.game.add.sprite(this.game.world.centerX, 500, 'player');
         player.scale.setTo(2, 2);
-        player.anchor.setTo(0.5, 0.5);
+        player.anchor.setTo(1, 1);
         this.game.physics.arcade.enable(player);
         player.body.collideWorldBounds = true;
         player.body.immovable = true;
@@ -45,10 +46,12 @@ theGame.prototype = {
         music.loop = true;
         drip = this.game.add.audio('drip');
         powerup = this.game.add.audio('powerup');
+        starPowerup = this.game.add.audio('star-powerup');
 
         this.game.time.events.repeat(Phaser.Timer.SECOND, 1000, this.spawnWaterDrop, this);
         this.game.time.events.add(Phaser.Timer.SECOND * 3, this.spawnWateringCan, this);
-        this.game.time.events.add(Phaser.Timer.SECOND * 6, this.spawnStar, this);
+        this.game.time.events.add(Phaser.Timer.SECOND * 2, this.spawnStar, this);
+        this.game.time.events.add(Phaser.Timer.SECOND * 30, this.gameOver, this);
     },
 
     update: function () {
@@ -61,26 +64,28 @@ theGame.prototype = {
             }
         });
         this.game.physics.arcade.collide(player, stars, (p, s) => {
-            powerup.play();
+            starPowerup.play();
             s.kill();
-            this.game.add.tween(p).to({ alpha: 1 }, 1000, Phaser.Easing.Linear.None, true, 0, 1000, true);
+            sizeMultipler = 2;
+            player.scale.setTo(player.scale.x * sizeMultipler, player.scale.y * sizeMultipler);
+            this.game.time.events.add(Phaser.Timer.SECOND * 3, () => sizeMultipler = 1);
         });
 
         if (score >= 50 * 50) {
             this.changePlayerImage('bonsai');
-            player.scale.setTo(1.1, 1.1);
+            player.scale.setTo(1.1 * sizeMultipler, 1.1 * sizeMultipler);
         }
         else if (score >= 30 * 50) {
             this.changePlayerImage('flower');
-            player.scale.setTo(1.1, 1.1);
+            player.scale.setTo(1.1 * sizeMultipler, 1.1 * sizeMultipler);
         }
         else if (score >= 15 * 50) {
             this.changePlayerImage('plant');
-            player.scale.setTo(2, 2);
+            player.scale.setTo(2 * sizeMultipler, 2 * sizeMultipler);
         }
         else if (score >= 5 * 50) {
             this.changePlayerImage('seed');
-            player.scale.setTo(0.7, 0.7);
+            player.scale.setTo(0.7 * sizeMultipler, 0.7 * sizeMultipler);
         }
 
         player.x = this.game.input.x;
